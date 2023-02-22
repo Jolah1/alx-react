@@ -20,7 +20,7 @@ function App() {
         </form>
       </div>
       <div className="App-footer">
-        Copyright {getFullYear()} - {getFooterCopy} </div>
+        Copyright {getFullYear()} - Holberton School {getFooterCopy} </div>
     </div>
   );
 }

@@ -17,4 +17,5 @@ rootNotifications.render(
     <Notifications />
   </React.StrictMode>
 );
+
 reportWebVitals();
