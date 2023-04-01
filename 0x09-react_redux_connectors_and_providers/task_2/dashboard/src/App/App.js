@@ -15,6 +15,8 @@ import AppContext from "./AppContext";
 import {
   displayNotificationDrawer,
   hideNotificationDrawer,
+  loginRequest,
+  logout,
 } from "../actions/uiActionCreators";
 
 const listCourses = [
@@ -31,16 +33,13 @@ export const listNotificationsInitialState = [
 
 document.body.style.margin = 0;
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.handleKeyCombination = this.handleKeyCombination.bind(this);
-    this.logIn = this.logIn.bind(this);
-    this.logOut = this.logOut.bind(this);
     this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
     this.state = {
       user,
-      logOut: this.logOut,
       listNotifications: listNotificationsInitialState,
     };
   }
@@ -48,22 +47,8 @@ class App extends Component {
   handleKeyCombination(e) {
     if (e.key === "h" && e.ctrlKey) {
       alert("Logging you out");
-      this.state.logOut();
+      this.props.logout();
     }
-  }
-
-  logIn(email, password) {
-    this.setState({
-      user: {
-        email,
-        password,
-        isLoggedIn: true,
-      },
-    });
-  }
-
-  logOut() {
-    this.setState({ user });
   }
 
   markNotificationAsRead(id) {
@@ -83,19 +68,19 @@ class App extends Component {
   }
 
   render() {
-    const { user, logOut, listNotifications } = this.state;
+    const { user, listNotifications } = this.state;
 
     const {
       isLoggedIn,
       displayDrawer,
       displayNotificationDrawer,
       hideNotificationDrawer,
+      login,
+      logout,
     } = this.props;
 
-    const value = { user, logOut };
-
     return (
-      <AppContext.Provider value={value}>
+      <>
         <Notifications
           listNotifications={listNotifications}
           displayDrawer={displayDrawer}
@@ -110,7 +95,7 @@ class App extends Component {
           <div className={css(styles.appBody)}>
             {!isLoggedIn ? (
               <BodySectionWithMarginBottom title="Log in to continue">
-                <Login logIn={this.logIn} />
+                <Login logIn={login} />
               </BodySectionWithMarginBottom>
             ) : (
               <BodySectionWithMarginBottom title="Course list">
@@ -137,7 +122,7 @@ class App extends Component {
             <Footer />
           </div>
         </div>
-      </AppContext.Provider>
+      </>
     );
   }
 }
@@ -147,6 +132,7 @@ App.defaultProps = {
   displayDrawer: false,
   displayNotificationDrawer: () => {},
   hideNotificationDrawer: () => {},
+  login: () => {},
 };
 
 App.propTypes = {
@@ -154,6 +140,7 @@ App.propTypes = {
   displayDrawer: PropTypes.bool,
   displayNotificationDrawer: PropTypes.func,
   hideNotificationDrawer: PropTypes.func,
+  login: PropTypes.func,
 };
 
 const cssVars = {
@@ -206,6 +193,8 @@ export const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   displayNotificationDrawer,
   hideNotificationDrawer,
+  login: loginRequest,
+  logout,
 };
 
 // export default App;
